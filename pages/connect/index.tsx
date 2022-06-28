@@ -1,9 +1,9 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import { Box, Stack, TextField, Button, Typography } from '@mui/material'
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import { Box, Stack, TextField, Button, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
-import styles from '../../styles/Connect.module.css'
+import styles from '../../styles/Connect.module.css';
 
 const Connect: NextPage = () => {
   return (
@@ -16,14 +16,10 @@ const Connect: NextPage = () => {
 
       <main className={styles.main}>
         <Box sx={{ py: 4, px: 6, borderRadius: 1, backgroundColor: '#292B33' }}>
-          <Stack spacing={1} direction="column">
-            <Typography variant="h4" mb={1} color="#FFFFFF">{'MONGO ADMIN'}</Typography>
-            <TextField variant="standard" label="HOST" placeholder="mongodb://" InputLabelProps={{ style: { color: '#898989' } }} sx={{ input: { color: '#FFFFFF' } }} />
-            <TextField variant="standard" label="USERNAME" InputLabelProps={{ style: { color: '#898989' } }} sx={{ input: { color: '#FFFFFF' } }} />
-            <TextField variant="standard" label="PASSWORD" type="password" InputLabelProps={{ style: { color: '#898989' } }} sx={{ input: { color: '#FFFFFF' } }} />
-            <Box pt={2}>
-              <Button variant="text" sx={{ width: 1 }} endIcon={<LoginIcon />}>Connect</Button>
-            </Box>
+          <Stack spacing={2} direction="column">
+            <Typography variant="h4" color="#FFFFFF">{'MONGO ADMIN'}</Typography>
+            <TextField variant="standard" label="URI" placeholder="mongodb://" InputLabelProps={{ style: { color: '#898989' } }} sx={{ input: { color: '#FFFFFF' } }} />
+            <Button variant="text" sx={{ width: 1 }} endIcon={<LoginIcon />}>Connect</Button>
           </Stack>
         </Box>
       </main>
@@ -41,7 +37,7 @@ const Connect: NextPage = () => {
         </a>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Connect
+export default Connect;
