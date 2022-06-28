@@ -1,3 +1,4 @@
+import React from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -6,6 +7,12 @@ import LoginIcon from '@mui/icons-material/Login';
 import styles from '../../styles/Connect.module.css';
 
 const Connect: NextPage = () => {
+  const [uri, setUri] = React.useState<string>('');
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUri(e.target.value);
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -18,7 +25,14 @@ const Connect: NextPage = () => {
         <Box sx={{ py: 4, px: 6, borderRadius: 1, backgroundColor: '#292B33' }}>
           <Stack spacing={2} direction="column">
             <Typography variant="h4" color="#FFFFFF">{'MONGO ADMIN'}</Typography>
-            <TextField variant="standard" label="URI" placeholder="mongodb://" InputLabelProps={{ style: { color: '#898989' } }} sx={{ input: { color: '#FFFFFF' } }} />
+            <TextField
+              variant="standard"
+              label="URI"
+              placeholder="mongodb://"
+              InputLabelProps={{ style: { color: '#898989' } }}
+              sx={{ input: { color: '#FFFFFF' } }}
+              onChange={onChange}
+            />
             <Button variant="text" sx={{ width: 1 }} endIcon={<LoginIcon />}>Connect</Button>
           </Stack>
         </Box>
