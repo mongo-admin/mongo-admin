@@ -2,12 +2,43 @@ import React from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { Box, Stack, TextField, Button, Typography } from '@mui/material';
+import { Alert, Snackbar, Backdrop, CircularProgress, Box, Stack, TextField, Button, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import styles from '../../styles/Connect.module.css';
 
 const Connect: NextPage = () => {
-  const [uri, setUri] = React.useState<string>('');
+  const [uri, setUri] = React.useState<string>('mongodb://root:password@localhost:27017');
+  const [message, setMessage] = React.useState<string>('');
+  const [connecting, setConnecting] = React.useState<boolean>(false);
+
+  const requestConnect = async () => {
+    if(!uri.length) {
+      setMessage('URI is empty.');
+      return;
+    }
+
+    setConnecting(true);
+
+    try {
+      const res = await fetch('/api/connect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uri }),
+      });
+
+      const data = await res.json();
+
+      console.log(res);
+      console.log(data);
+
+    } catch (err) {
+      setMessage('Cannot connect to db.');
+    } finally {
+      setConnecting(false);
+    }
+  };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUri(e.target.value);
@@ -31,9 +62,10 @@ const Connect: NextPage = () => {
               placeholder="mongodb://"
               InputLabelProps={{ style: { color: '#898989' } }}
               sx={{ input: { color: '#FFFFFF' } }}
+              value={uri}
               onChange={onChange}
             />
-            <Button variant="text" sx={{ width: 1 }} endIcon={<LoginIcon />}>Connect</Button>
+            <Button variant="contained" sx={{ width: 1 }} endIcon={<LoginIcon />} onClick={requestConnect}>Connect</Button>
           </Stack>
         </Box>
       </main>
@@ -50,6 +82,22 @@ const Connect: NextPage = () => {
           </span>
         </a>
       </footer>
+
+      <Snackbar
+        open={!!message.length}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        autoHideDuration={3000}
+        onClose={() => setMessage('')}>
+        <Alert severity="error">
+          {message}
+        </Alert>
+      </Snackbar>
+
+      <Backdrop
+        open={connecting}
+        sx={{ color: '#FFFFFF' }}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };
