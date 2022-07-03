@@ -1,15 +1,18 @@
 import React from 'react';
 import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
 import { Alert, Snackbar, Backdrop, CircularProgress, Box, Stack, TextField, Button, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
+import * as cookie from '../../libs/cookie';
 import styles from '../../styles/Connect.module.css';
 
 const Connect: NextPage = () => {
   const [uri, setUri] = React.useState<string>('mongodb://root:password@localhost:27017');
   const [message, setMessage] = React.useState<string>('');
   const [connecting, setConnecting] = React.useState<boolean>(false);
+  const router = useRouter();
 
   const requestConnect = async () => {
     if(!uri.length) {
@@ -28,11 +31,9 @@ const Connect: NextPage = () => {
         body: JSON.stringify({ uri }),
       });
 
-      const data = await res.json();
-
-      console.log(res);
-      console.log(data);
-
+      cookie.set('CONNECTION-URI', uri);
+      
+      router.push('/databases');
     } catch (err) {
       setMessage('Cannot connect to db.');
     } finally {
