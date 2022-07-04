@@ -32,7 +32,7 @@ const Connect: NextPage = () => {
       });
 
       cookie.set('CONNECTION-URI', uri);
-      
+
       router.push('/databases');
     } catch (err) {
       setMessage('Cannot connect to db.');
@@ -54,15 +54,13 @@ const Connect: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <Box sx={{ py: 4, px: 6, borderRadius: 1, backgroundColor: '#292B33' }}>
-          <Stack spacing={2} direction="column">
-            <Typography variant="h4" color="#FFFFFF">{'MONGO ADMIN'}</Typography>
+        <Box sx={{ py: 4, px: 6, borderRadius: 1, backgroundColor: '#FAFAFA' }}>
+          <Stack spacing={4} direction="column">
+            <Typography variant="h5" mx={10}>{'MONGO ADMIN'}</Typography>
             <TextField
               variant="standard"
               label="URI"
               placeholder="mongodb://"
-              InputLabelProps={{ style: { color: '#898989' } }}
-              sx={{ input: { color: '#FFFFFF' } }}
               value={uri}
               onChange={onChange}
             />
