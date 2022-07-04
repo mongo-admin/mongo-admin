@@ -3,10 +3,14 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
+import { Backdrop, CircularProgress, Box, Stack } from '@mui/material';
 import * as cookie from '../../libs/cookie';
 import styles from '../../styles/Connect.module.css';
 
 const Databases: NextPage = () => {
+  const [uri, setUri] = React.useState<string>('');
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [databaseInfo, setDatabaseInfo] = React.useState<any>(null);
   const router = useRouter();
 
   React.useEffect(() => {
@@ -14,8 +18,48 @@ const Databases: NextPage = () => {
       router.replace('/connect');
     }
 
-    console.log(cookie.get('CONNECTION-URI'));
+    setUri(cookie.get('CONNECTION-URI'));
   }, []);
+
+  React.useEffect(() => {
+    if(uri.length) {
+      requestDatabaseList();
+    }
+  }, [uri]);
+
+  const requestDatabaseList = async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/databases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uri }),
+      });
+
+      if(res.status === 200) {
+        const data = await res.json();
+
+        setDatabaseInfo(data.databases);
+      }
+    } catch (err) {
+      router.replace('/connect');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const Databases = databaseInfo?.databases?.map((item: any, index: number) => {
+    return (
+      <Stack key={index} spacing={4} direction="row">
+        <Box>{item.name}</Box>
+        <Box>{item.sizeOnDisk}</Box>
+        <Box>{item.empty}</Box>
+      </Stack>
+    );
+  });
 
   return (
     <div className={styles.container}>
@@ -26,7 +70,12 @@ const Databases: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-
+        <Stack>
+          <Box>
+            {uri}
+          </Box>
+          {Databases}
+        </Stack>
       </main>
 
       <footer className={styles.footer}>
@@ -41,6 +90,12 @@ const Databases: NextPage = () => {
           </span>
         </a>
       </footer>
+
+      <Backdrop
+        open={loading}
+        sx={{ color: '#FFFFFF' }}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };
