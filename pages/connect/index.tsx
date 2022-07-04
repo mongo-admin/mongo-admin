@@ -11,7 +11,7 @@ import styles from '../../styles/Connect.module.css';
 const Connect: NextPage = () => {
   const [uri, setUri] = React.useState<string>('mongodb://root:password@localhost:27017');
   const [message, setMessage] = React.useState<string>('');
-  const [connecting, setConnecting] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
 
   const requestConnect = async () => {
@@ -20,7 +20,7 @@ const Connect: NextPage = () => {
       return;
     }
 
-    setConnecting(true);
+    setLoading(true);
 
     try {
       const res = await fetch('/api/connect', {
@@ -31,13 +31,15 @@ const Connect: NextPage = () => {
         body: JSON.stringify({ uri }),
       });
 
-      cookie.set('CONNECTION-URI', uri);
+      if(res.status === 200) {
+        cookie.set('CONNECTION-URI', uri);
 
-      router.push('/databases');
+        router.push('/databases');
+      }
     } catch (err) {
       setMessage('Cannot connect to db.');
     } finally {
-      setConnecting(false);
+      setLoading(false);
     }
   };
 
@@ -93,7 +95,7 @@ const Connect: NextPage = () => {
       </Snackbar>
 
       <Backdrop
-        open={connecting}
+        open={loading}
         sx={{ color: '#FFFFFF' }}>
         <CircularProgress color="inherit" />
       </Backdrop>
