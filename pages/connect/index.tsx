@@ -14,6 +14,10 @@ const Connect: NextPage = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
 
+  React.useEffect(() => {
+    cookie.remove('CONNECTION-URI');
+  }, []);
+
   const requestConnect = async () => {
     if(!uri.length) {
       setMessage('URI is empty.');
@@ -35,9 +39,11 @@ const Connect: NextPage = () => {
         cookie.set('CONNECTION-URI', uri);
 
         router.push('/databases');
+      } else {
+        setMessage('Cannot connect to DB.');
       }
     } catch (err) {
-      setMessage('Cannot connect to db.');
+      setMessage('Cannot connect to DB.');
     } finally {
       setLoading(false);
     }
