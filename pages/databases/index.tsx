@@ -5,6 +5,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { Backdrop, CircularProgress, Box, Stack, Grid, Typography, Link, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LogoutIcon from '@mui/icons-material/Logout';
 import * as cookie from '../../libs/cookie';
 import styles from '../../styles/Databases.module.css';
 
@@ -23,7 +24,7 @@ const Databases: NextPage = () => {
   }, []);
 
   React.useEffect(() => {
-    if(uri.length) {
+    if(uri?.length) {
       requestDatabaseList();
     }
   }, [uri]);
@@ -44,6 +45,8 @@ const Databases: NextPage = () => {
         const data = await res.json();
 
         setDatabaseInfo(data.databases);
+      } else {
+        router.replace('/connect');  
       }
     } catch (err) {
       router.replace('/connect');
@@ -51,6 +54,12 @@ const Databases: NextPage = () => {
       setLoading(false);
     }
   };
+
+  const onClickDisconnect = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    router.replace('/connect');
+  }
 
   const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -77,34 +86,39 @@ const Databases: NextPage = () => {
 
       <header className={styles.header}>
         <Typography variant="h6">{'Mongo Admin'}</Typography>
+        <Box>
+          <Button variant="contained" color="error" endIcon={<LogoutIcon />} onClick={onClickDisconnect}>Disconnect</Button>
+        </Box>
       </header>
 
       <main className={styles.main}>
-        <Stack>
-          <Box sx={{ px: 6, py: 2, backgroundColor: '#FAFAFA' }}>
-            {`Connected URI: ${uri}`}
-          </Box>
-          <Grid container spacing={2} mt={2}>
-            <Grid item md={4}>
-              <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
-                {`DB Count: ${databaseInfo?.databases?.length}`}
-              </Box>
+        {databaseInfo ? (
+          <Stack>
+            <Box sx={{ px: 6, py: 2, backgroundColor: '#FAFAFA' }}>
+              {`Connected URI: ${uri}`}
+            </Box>
+            <Grid container spacing={2} mt={2}>
+              <Grid item md={4}>
+                <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                  {`DB Count: ${databaseInfo?.databases?.length}`}
+                </Box>
+              </Grid>
+              <Grid item md={4}>
+                <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                  {`Size: ${databaseInfo?.totalSize / 1024} KB`}
+                </Box>
+              </Grid>
+              <Grid item md={4}>
+                <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                  {`Size: ${databaseInfo?.totalSizeMb} MB`}
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item md={4}>
-              <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
-                {`Size: ${databaseInfo?.totalSize / 1024} KB`}
-              </Box>
-            </Grid>
-            <Grid item md={4}>
-              <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
-                {`Size: ${databaseInfo?.totalSizeMb} MB`}
-              </Box>
-            </Grid>
-          </Grid>
-          <Stack mt={4}>
-            {Databases}
+            <Stack mt={4}>
+              {Databases}
+            </Stack>
           </Stack>
-        </Stack>
+        ) : null}
       </main>
 
       <footer className={styles.footer}>
