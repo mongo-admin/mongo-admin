@@ -3,9 +3,10 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
-import { Backdrop, CircularProgress, Box, Stack } from '@mui/material';
+import { Backdrop, CircularProgress, Box, Stack, Grid, Typography, Link, Button } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import * as cookie from '../../libs/cookie';
-import styles from '../../styles/Connect.module.css';
+import styles from '../../styles/Databases.module.css';
 
 const Databases: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
@@ -51,13 +52,18 @@ const Databases: NextPage = () => {
     }
   };
 
+  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+
   const Databases = databaseInfo?.databases?.map((item: any, index: number) => {
     return (
-      <Stack key={index} spacing={4} direction="row">
-        <Box>{item.name}</Box>
-        <Box>{item.sizeOnDisk}</Box>
-        <Box>{item.empty}</Box>
-      </Stack>
+      <Link key={item.name} my={0.5} href="#" underline="hover">
+        <Stack spacing={4} p={2} direction="row" alignItems="center" justifyContent="space-between" sx={{ backgroundColor: '#FAFAFA' }}>
+          <Box>{`${item.name} (${item.sizeOnDisk / 1024} KB)`}</Box>
+          <Button variant="contained" color="error" onClick={onClickDelete}><DeleteIcon /></Button>
+        </Stack>
+      </Link>
     );
   });
 
@@ -69,12 +75,35 @@ const Databases: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <header className={styles.header}>
+        <Typography variant="h6">{'Mongo Admin'}</Typography>
+      </header>
+
       <main className={styles.main}>
         <Stack>
-          <Box>
-            {uri}
+          <Box sx={{ px: 6, py: 2, backgroundColor: '#FAFAFA' }}>
+            {`Connected URI: ${uri}`}
           </Box>
-          {Databases}
+          <Grid container spacing={2} mt={2}>
+            <Grid item md={4}>
+              <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                {`DB Count: ${databaseInfo?.databases?.length}`}
+              </Box>
+            </Grid>
+            <Grid item md={4}>
+              <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                {`Size: ${databaseInfo?.totalSize / 1024} KB`}
+              </Box>
+            </Grid>
+            <Grid item md={4}>
+              <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                {`Size: ${databaseInfo?.totalSizeMb} MB`}
+              </Box>
+            </Grid>
+          </Grid>
+          <Stack mt={4}>
+            {Databases}
+          </Stack>
         </Stack>
       </main>
 
