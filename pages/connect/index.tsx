@@ -2,14 +2,13 @@ import React from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import Image from 'next/image';
 import { Alert, Snackbar, Backdrop, CircularProgress, Box, Stack, TextField, Button, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import * as cookie from '../../libs/cookie';
 import styles from '../../styles/Connect.module.css';
 
 const Connect: NextPage = () => {
-  const [uri, setUri] = React.useState<string>('mongodb://root:password@localhost:27017');
+  const [uri, setUri] = React.useState<string>('mongodb://root:U7J92NegZuPI@localhost:27017');
   const [message, setMessage] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
@@ -38,7 +37,7 @@ const Connect: NextPage = () => {
       if(res.status === 200) {
         cookie.set('CONNECTION-URI', uri);
 
-        router.push('/databases');
+        router.replace('/databases');
       } else {
         setMessage('Cannot connect to DB.');
       }
@@ -76,19 +75,6 @@ const Connect: NextPage = () => {
           </Stack>
         </Box>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
 
       <Snackbar
         open={!!message.length}

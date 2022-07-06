@@ -2,8 +2,7 @@ import React from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import Image from 'next/image';
-import { Backdrop, CircularProgress, Box, Stack, Grid, Typography, Link, Button } from '@mui/material';
+import { Backdrop, CircularProgress, Box, Stack, Typography, Link, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LogoutIcon from '@mui/icons-material/Logout';
 import * as cookie from '../../libs/cookie';
@@ -33,7 +32,7 @@ const Databases: NextPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/databases', {
+      const res = await fetch('/api/database/list', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,19 +113,6 @@ const Databases: NextPage = () => {
           </Stack>
         ) : null}
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
 
       <Backdrop
         open={loading}
