@@ -24,10 +24,10 @@ const Databases: NextPage = () => {
   }, []);
 
   React.useEffect(() => {
-    if(uri?.length) {
+    if(uri?.length && database) {
       requestCollectionList(database);
     }
-  }, [uri]);
+  }, [uri, database]);
 
   const requestCollectionList = async (dbName: string | string[] | undefined) => {
     setLoading(true);
@@ -67,11 +67,13 @@ const Databases: NextPage = () => {
       </header>
 
       <main className={styles.main}>
-        <Stack>
-          <Box sx={{ px: 6, py: 2, backgroundColor: '#FAFAFA' }}>
-            {`DB Name: ${database}`}
-          </Box>
-        </Stack>
+        {database ? (
+          <Stack>
+            <Box sx={{ px: 6, py: 2, backgroundColor: '#FAFAFA' }}>
+              {`DB Name: ${database}`}
+            </Box>
+          </Stack>
+        ) : null}
       </main>
 
       <footer className={styles.footer}>
