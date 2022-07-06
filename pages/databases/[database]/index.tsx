@@ -1,12 +1,11 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
-import { Backdrop, CircularProgress, Box, Stack, Grid, Typography, Link, Button } from '@mui/material';
+import { Backdrop, CircularProgress, Box, Stack, Typography, Link, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LogoutIcon from '@mui/icons-material/Logout';
 import * as cookie from '../../../libs/cookie';
-import styles from '../../../styles/Databases.module.css';
+import styles from '../../../styles/Database.module.css';
 
 const Databases: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
@@ -26,15 +25,15 @@ const Databases: NextPage = () => {
 
   React.useEffect(() => {
     if(uri?.length && database) {
-      requestCollectionList(database);
+      requestDatabaseInfo(database);
     }
   }, [uri, database]);
 
-  const requestCollectionList = async (dbName: string | string[] | undefined) => {
+  const requestDatabaseInfo = async (dbName: string | string[] | undefined) => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/collection/list', {
+      const res = await fetch('/api/database/info', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
