@@ -93,28 +93,22 @@ const Databases: NextPage = () => {
 
       <main className={styles.main}>
         {databaseInfo ? (
-          <Stack>
+          <Stack spacing={4}>
             <Box sx={{ px: 6, py: 2, backgroundColor: '#FAFAFA' }}>
               {`Connected URI: ${uri}`}
             </Box>
-            <Grid container spacing={2} mt={2}>
-              <Grid item md={4}>
-                <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
-                  {`DB Count: ${databaseInfo?.databases?.length}`}
-                </Box>
-              </Grid>
-              <Grid item md={4}>
-                <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
-                  {`Size: ${databaseInfo?.totalSize / 1024} KB`}
-                </Box>
-              </Grid>
-              <Grid item md={4}>
-                <Box sx={{ px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
-                  {`Size: ${databaseInfo?.totalSizeMb} MB`}
-                </Box>
-              </Grid>
-            </Grid>
-            <Stack mt={4}>
+            <Stack spacing={2} direction="row">
+              <Box sx={{ flex: 1, px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                {`DB Count: ${databaseInfo?.databases?.length}`}
+              </Box>
+              <Box sx={{ flex: 1, px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                {`Size: ${databaseInfo?.totalSize / 1024} KB`}
+              </Box>
+              <Box sx={{ flex: 1, px: 2, py: 4, backgroundColor: '#FAFAFA', textAlign: 'center' }}>
+                {`Size: ${databaseInfo?.totalSizeMb} MB`}
+              </Box>
+            </Stack>
+            <Stack>
               {Databases}
             </Stack>
           </Stack>
