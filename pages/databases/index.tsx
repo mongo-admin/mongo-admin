@@ -1,7 +1,6 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import { Backdrop, CircularProgress, Box, Stack, Typography, Link, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LogoutIcon from '@mui/icons-material/Logout';

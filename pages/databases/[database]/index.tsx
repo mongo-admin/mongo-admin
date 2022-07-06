@@ -7,7 +7,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import * as cookie from '../../../libs/cookie';
 import styles from '../../../styles/Database.module.css';
 
-const Databases: NextPage = () => {
+const Database: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
   const [databaseStats, setDatabaseStats] = React.useState<any>({});
@@ -120,4 +120,4 @@ const Databases: NextPage = () => {
   );
 };
 
-export default Databases;
+export default Database;
