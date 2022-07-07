@@ -45,9 +45,10 @@ const Document: NextPage = () => {
       if(res.status === 200) {
         const data = await res.json();
 
-        setDocumentInfo(JSON.stringify(data.document, null, 4));
+        // setDocumentInfo(JSON.stringify(data.document, null, 4));
+        setDocumentInfo(data.document);
       } else {
-        router.replace('/connect');  
+        router.replace('/connect');
       }
     } catch (err) {
       router.replace('/connect');
@@ -72,9 +73,7 @@ const Document: NextPage = () => {
     e.preventDefault();
 
     try {
-      JSON.parse(documentInfo);
-
-      const res = await fetch('/api/document/info', {
+      const res = await fetch('/api/document/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
