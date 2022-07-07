@@ -123,7 +123,7 @@ const Collection: NextPage = () => {
     })();
 
     return (
-      <TableContainer sx={{ backgroundColor: '#FAFAFA' }}>
+      <TableContainer className={styles.table} sx={{ backgroundColor: '#FAFAFA' }}>
         <Table aria-label="simple table">
           {DocumentsTableHead}
           {DocumentsTableBody}
