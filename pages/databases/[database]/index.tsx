@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Backdrop, CircularProgress, Box, Stack, Typography, Link, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import * as cookie from '../../../libs/cookie';
 import styles from '../../../styles/Database.module.css';
 
@@ -98,6 +99,9 @@ const Database: NextPage = () => {
       <main className={styles.main}>
         {database ? (
           <Stack spacing={4}>
+            <Box>
+              <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
+            </Box>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`DB Name: ${database}`}
             </Box>

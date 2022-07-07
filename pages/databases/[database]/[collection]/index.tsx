@@ -17,6 +17,7 @@ import {
   TableRow,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import * as cookie from '../../../../libs/cookie';
 import styles from '../../../../styles/Collection.module.css';
 
@@ -161,6 +162,9 @@ const Collection: NextPage = () => {
       <main className={styles.main}>
         {database && collection ? (
           <Stack spacing={4}>
+            <Box>
+              <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
+            </Box>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`Collection Name: ${collection}`}
             </Box>

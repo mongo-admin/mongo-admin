@@ -3,6 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { Backdrop, CircularProgress, Box, Stack, Typography, Button, TextField } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import * as cookie from '../../../../../libs/cookie';
 import styles from '../../../../../styles/Document.module.css';
 
@@ -85,7 +86,12 @@ const Document: NextPage = () => {
 
       <main className={styles.main}>
         {database && collection && Object.keys(documentInfo).length ? (
-          Editor
+          <Stack spacing={4}>
+            <Box>
+              <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
+            </Box>
+            {Editor}
+          </Stack>
         ) : null}
       </main>
 
