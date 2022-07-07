@@ -75,6 +75,12 @@ const Collection: NextPage = () => {
     router.replace('/connect');
   }
 
+  const onClickRow = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, documentId: string) => {
+    e.preventDefault();
+
+    router.push(`${router.asPath}/${documentId}`);
+  };
+
   const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
   };
@@ -109,7 +115,7 @@ const Collection: NextPage = () => {
         });
   
         return (
-          <TableRow key={`document-${index}`}>
+          <TableRow key={`document-${index}`} hover onClick={(e) => onClickRow(e, document._id)}>
             {TableBodyRowCells}
           </TableRow>
         );
