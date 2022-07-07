@@ -4,13 +4,14 @@ import { useRouter } from 'next/router';
 import { Backdrop, CircularProgress, Box, Stack, Typography, Button, TextField } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import SaveIcon from '@mui/icons-material/Save';
 import * as cookie from '../../../../../libs/cookie';
 import styles from '../../../../../styles/Document.module.css';
 
 const Document: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [documentInfo, setDocumentInfo] = React.useState<any>({});
+  const [documentInfo, setDocumentInfo] = React.useState<string>('');
   const router = useRouter();
   const { database, collection, document } = router.query;
 
@@ -24,11 +25,11 @@ const Document: NextPage = () => {
 
   React.useEffect(() => {
     if(uri?.length && database && collection && document) {
-      requestCollectionInfo();
+      requestDocumentInfo();
     }
   }, [uri, database, collection, document]);
 
-  const requestCollectionInfo = async () => {
+  const requestDocumentInfo = async () => {
     setLoading(true);
 
     try {
@@ -43,7 +44,7 @@ const Document: NextPage = () => {
       if(res.status === 200) {
         const data = await res.json();
 
-        setDocumentInfo(data.document);
+        setDocumentInfo(JSON.stringify(data.document, null, 4));
       } else {
         router.replace('/connect');  
       }
@@ -58,20 +59,31 @@ const Document: NextPage = () => {
     e.preventDefault();
 
     router.replace('/connect');
-  }
+  };
 
-  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickBack = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    router.back();
+  };
+
+  const onClickSave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+
+  const onChangeEditor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDocumentInfo(e.target.value);
   };
 
   const Editor = (
     <TextField
       sx={{ width: '80vw' }}
-      label="document"
+      label={`document - ${document}`}
       multiline
       variant="filled"
       maxRows={20}
-      defaultValue={JSON.stringify(documentInfo, null, 4)}
+      value={documentInfo}
+      onChange={onChangeEditor}
     />
   );
 
@@ -87,8 +99,9 @@ const Document: NextPage = () => {
       <main className={styles.main}>
         {database && collection && Object.keys(documentInfo).length ? (
           <Stack spacing={4}>
-            <Box>
-              <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
+            <Box display="flex" justifyContent="space-between">
+              <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={onClickBack}>Back</Button>
+              <Button variant="contained" color="success" startIcon={<SaveIcon />} onClick={onClickSave}>Save</Button>
             </Box>
             {Editor}
           </Stack>
