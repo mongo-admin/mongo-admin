@@ -1,7 +1,7 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Backdrop, CircularProgress, Box, Stack, Typography, Button, TextField } from '@mui/material';
+import { Backdrop, CircularProgress, Snackbar, Alert, Box, Stack, Typography, Button, TextField } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import SaveIcon from '@mui/icons-material/Save';
@@ -12,6 +12,7 @@ const Document: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
   const [documentInfo, setDocumentInfo] = React.useState<string>('');
+  const [message, setMessage] = React.useState<string>('');
   const router = useRouter();
   const { database, collection, document } = router.query;
 
@@ -67,8 +68,28 @@ const Document: NextPage = () => {
     router.back();
   };
 
-  const onClickSave = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    try {
+      JSON.parse(documentInfo);
+
+      const res = await fetch('/api/document/info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uri, database, collection, document: documentInfo }),
+      });
+
+      if(res.status === 200) {
+        router.back();
+      } else {
+        setMessage('Save error.'); 
+      }
+    } catch (err) {
+      setMessage('Save error.');
+    }
   };
 
   const onChangeEditor = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,6 +128,16 @@ const Document: NextPage = () => {
           </Stack>
         ) : null}
       </main>
+
+      <Snackbar
+        open={!!message.length}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        autoHideDuration={3000}
+        onClose={() => setMessage('')}>
+        <Alert severity="error">
+          {message}
+        </Alert>
+      </Snackbar>
 
       <Backdrop
         open={loading}
