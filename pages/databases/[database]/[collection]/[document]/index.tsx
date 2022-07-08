@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Backdrop, CircularProgress, Snackbar, Alert, Box, Stack, Typography, Button, TextField } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import * as cookie from '../../../../../libs/cookie';
 import styles from '../../../../../styles/Document.module.css';
@@ -68,6 +69,35 @@ const Document: NextPage = () => {
     router.back();
   };
 
+  const onClickDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if(!window.confirm('Delete a document.')) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/document/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uri, database, collection, document }),
+      });
+
+      if(res.status === 200) {
+        router.back();
+      } else {
+        const data = await res.json();
+
+        setMessage(data.message);
+      }
+    } catch (err) {
+      router.replace('/connect');
+    }
+  };
+
   const onClickSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -120,7 +150,10 @@ const Document: NextPage = () => {
           <Stack spacing={4}>
             <Box display="flex" justifyContent="space-between">
               <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={onClickBack}>Back</Button>
-              <Button variant="contained" color="success" startIcon={<SaveIcon />} onClick={onClickSave}>Save</Button>
+              <Stack spacing={2} direction="row">
+                <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={onClickDelete}>Delete</Button>
+                <Button variant="contained" color="success" startIcon={<SaveIcon />} onClick={onClickSave}>Save</Button>
+              </Stack>
             </Box>
             {Editor}
           </Stack>
