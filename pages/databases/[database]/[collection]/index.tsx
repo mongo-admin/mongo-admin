@@ -18,6 +18,7 @@ import {
   TableRow,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import * as cookie from '../../../../libs/cookie';
@@ -108,6 +109,10 @@ const Collection: NextPage = () => {
     }
   };
 
+  const onClickNew = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+
   const onClickRow = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, documentId: string) => {
     e.preventDefault();
 
@@ -128,6 +133,7 @@ const Collection: NextPage = () => {
     const DocumentsTableHead = (() => {
       const TableHeadRows = Object.keys(documents[0]).map((key: string, index: number) => {
         keys.push(key);
+
         return (
           <TableCell key={key}>
             {key}
@@ -242,7 +248,10 @@ const Collection: NextPage = () => {
           <Stack spacing={4}>
             <Box display="flex" justifyContent="space-between">
               <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
-              <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={onClickDeleteAll}>Delete All</Button>
+              <Stack spacing={2} direction="row">
+                <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={onClickDeleteAll}>Delete All</Button>
+                <Button variant="contained" color="success" startIcon={<AddBoxIcon />} onClick={onClickNew}>New</Button>
+              </Stack>
             </Box>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`Collection Name: ${collection}`}
