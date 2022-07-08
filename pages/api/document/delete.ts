@@ -15,7 +15,11 @@ export default async function handler(
     const client = await MongoClient.connect(uri);
     const connect = await client.db(database).collection(collection);
 
-    await connect.deleteOne({ _id: new ObjectId(document) });
+    if(document) {
+      await connect.deleteOne({ _id: new ObjectId(document) });
+    } else {
+      await connect.deleteMany({});
+    }
 
     client.close();
 

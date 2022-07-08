@@ -79,6 +79,35 @@ const Collection: NextPage = () => {
     router.replace('/connect');
   }
 
+  const onClickDeleteAll = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if(!window.confirm('Delete all documents.')) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/document/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uri, database, collection }),
+      });
+
+      if(res.status === 200) {
+        requestCollectionInfo();
+      } else {
+        const data = await res.json();
+
+        setMessage(data.message);
+      }
+    } catch (err) {
+      router.replace('/connect');
+    }
+  };
+
   const onClickRow = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, documentId: string) => {
     e.preventDefault();
 
@@ -118,7 +147,7 @@ const Collection: NextPage = () => {
   
     const DocumentsTableBody = (() => {
       const TableBodyRows = documents.map((document: any, index: number) => {
-        const onClickDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        const onClickDeleteOne = async (e: React.MouseEvent<HTMLButtonElement>) => {
           e.stopPropagation();
           e.preventDefault();
 
@@ -157,7 +186,7 @@ const Collection: NextPage = () => {
 
         TableBodyRowCells.unshift(
           <TableCell key={`delete-button-${index}`}>
-            <Button variant="contained" color="error" onClick={onClickDelete}><DeleteIcon /></Button>
+            <Button variant="contained" color="error" onClick={onClickDeleteOne}><DeleteIcon /></Button>
           </TableCell>
         );
   
@@ -208,8 +237,9 @@ const Collection: NextPage = () => {
       <main className={styles.main}>
         {database && collection ? (
           <Stack spacing={4}>
-            <Box>
+            <Box display="flex" justifyContent="space-between">
               <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
+              <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={onClickDeleteAll}>Delete All</Button>
             </Box>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`Collection Name: ${collection}`}
