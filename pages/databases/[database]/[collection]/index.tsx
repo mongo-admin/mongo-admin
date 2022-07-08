@@ -15,6 +15,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import * as cookie from '../../../../libs/cookie';
@@ -82,6 +83,7 @@ const Collection: NextPage = () => {
   };
 
   const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     e.preventDefault();
   };
 
@@ -103,6 +105,10 @@ const Collection: NextPage = () => {
         );
       });
   
+      TableHeadRows.unshift(
+        <TableCell key={'delete-button'} />
+      );
+
       return (
         <TableHead>
           <TableRow>
@@ -121,6 +127,12 @@ const Collection: NextPage = () => {
             </TableCell>
           );
         });
+
+        TableBodyRowCells.unshift(
+          <TableCell key={`delete-button-${index}`}>
+            <Button variant="contained" color="error" onClick={onClickDelete}><DeleteIcon /></Button>
+          </TableCell>
+        );
   
         return (
           <TableRow key={`document-${index}`} hover sx={{ cursor: 'pointer' }} onClick={(e) => onClickRow(e, document._id)}>
