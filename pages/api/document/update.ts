@@ -17,5 +17,7 @@ export default async function handler(
 
   await connect.updateOne({ _id: parsedDocument._id }, { $set: parsedDocument });
 
+  client.close();
+
   res.status(200).json({ success: true });
 }

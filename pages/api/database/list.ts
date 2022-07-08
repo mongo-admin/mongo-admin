@@ -15,5 +15,7 @@ export default async function handler(
   const connect = await client.db('admin').admin();
   const databases = await connect.listDatabases();
 
+  client.close();
+
   res.status(200).json({ success: true, databases });
 }

@@ -17,6 +17,8 @@ export default async function handler(
 
     await connect.deleteOne({ _id: new ObjectId(document) });
 
+    client.close();
+
     res.status(200).json({ success: true });
   } catch (err: any) {
     console.error(err);

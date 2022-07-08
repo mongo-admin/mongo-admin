@@ -17,5 +17,7 @@ export default async function handler(
   const collectionStats = await connect.stats();
   const documents = await connect.find({}).toArray();
 
+  client.close();
+
   res.status(200).json({ success: true, collectionStats, documents });
 }
