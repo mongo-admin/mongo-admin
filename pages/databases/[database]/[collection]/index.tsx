@@ -6,6 +6,8 @@ import {
   CircularProgress,
   Box,
   Stack,
+  Snackbar,
+  Alert,
   Typography,
   Button,
   Table,
@@ -26,6 +28,7 @@ const Collection: NextPage = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [collectionStats, setCollectionStats] = React.useState<any>({});
   const [documents, setDocuments] = React.useState<any[]>([0]);
+  const [message, setMessage] = React.useState<string>('');
   const router = useRouter();
   const { database, collection } = router.query;
 
@@ -82,11 +85,6 @@ const Collection: NextPage = () => {
     router.push(`${router.asPath}/${documentId}`);
   };
 
-  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
   const Documents = (() => {
     if(!documents.length) {
       return (
@@ -120,6 +118,35 @@ const Collection: NextPage = () => {
   
     const DocumentsTableBody = (() => {
       const TableBodyRows = documents.map((document: any, index: number) => {
+        const onClickDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+          e.stopPropagation();
+          e.preventDefault();
+
+          if(!window.confirm('Delete a document.')) {
+            return;
+          }
+
+          try {
+            const res = await fetch('/api/document/delete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ uri, database, collection, document: document._id }),
+            });
+      
+            if(res.status === 200) {
+              requestCollectionInfo();
+            } else {
+              const data = await res.json();
+
+              setMessage(data.message);
+            }
+          } catch (err) {
+            router.replace('/connect');
+          }
+        };
+
         const TableBodyRowCells = Object.keys(document).map((key: string) => {
           return (
             <TableCell key={`${key}-${index}`} sx={{ whiteSpace: 'break-spaces', wordWrap: 'break-word' }}>
@@ -196,6 +223,16 @@ const Collection: NextPage = () => {
           </Stack>
         ) : null}
       </main>
+
+      <Snackbar
+        open={!!message.length}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        autoHideDuration={3000}
+        onClose={() => setMessage('')}>
+        <Alert severity="error">
+          {message}
+        </Alert>
+      </Snackbar>
 
       <Backdrop
         open={loading}
