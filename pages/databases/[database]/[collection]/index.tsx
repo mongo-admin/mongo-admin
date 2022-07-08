@@ -56,7 +56,7 @@ const Collection: NextPage = () => {
 
       if(res.status === 200) {
         const data = await res.json();
-        console.log(data);
+
         setCollectionStats(data.collectionStats);
         setDocuments(data.documents);
       } else {
@@ -86,8 +86,16 @@ const Collection: NextPage = () => {
   };
 
   const Documents = (() => {
+    if(!documents.length) {
+      return (
+        <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
+          No documents.
+        </Box>
+      );
+    }
+
     const DocumentsTableHead = (() => {
-      const TableHeadRows = Object.keys(documents?.[0]).map((key: string, index: number) => {
+      const TableHeadRows = Object.keys(documents[0]).map((key: string, index: number) => {
         return (
           <TableCell key={key}>
             {key}
@@ -115,7 +123,7 @@ const Collection: NextPage = () => {
         });
   
         return (
-          <TableRow key={`document-${index}`} hover onClick={(e) => onClickRow(e, document._id)}>
+          <TableRow key={`document-${index}`} hover sx={{ cursor: 'pointer' }} onClick={(e) => onClickRow(e, document._id)}>
             {TableBodyRowCells}
           </TableRow>
         );
