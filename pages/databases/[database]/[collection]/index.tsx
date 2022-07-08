@@ -118,13 +118,16 @@ const Collection: NextPage = () => {
     if(!documents.length) {
       return (
         <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
-          No documents.
+          No documents
         </Box>
       );
     }
 
+    let keys: any[] = [];
+
     const DocumentsTableHead = (() => {
       const TableHeadRows = Object.keys(documents[0]).map((key: string, index: number) => {
+        keys.push(key);
         return (
           <TableCell key={key}>
             {key}
@@ -146,7 +149,7 @@ const Collection: NextPage = () => {
     })();
   
     const DocumentsTableBody = (() => {
-      const TableBodyRows = documents.map((document: any, index: number) => {
+      const TableBodyRows = documents.map((document: any, rowIndex: number) => {
         const onClickDeleteOne = async (e: React.MouseEvent<HTMLButtonElement>) => {
           e.stopPropagation();
           e.preventDefault();
@@ -176,22 +179,22 @@ const Collection: NextPage = () => {
           }
         };
 
-        const TableBodyRowCells = Object.keys(document).map((key: string) => {
+        const TableBodyRowCells = Object.keys(document).map((key: string, cellIndex: number) => {
           return (
-            <TableCell key={`${key}-${index}`} sx={{ whiteSpace: 'break-spaces', wordWrap: 'break-word' }}>
-              {typeof document[key] === 'object' ? JSON.stringify(document[key], null, 2) : document[key]}
+            <TableCell key={`${keys[cellIndex]}-${rowIndex}`} sx={{ whiteSpace: 'break-spaces', wordWrap: 'break-word' }}>
+              {typeof document[keys[cellIndex]] === 'object' ? JSON.stringify(document[keys[cellIndex]], null, 2) : document[keys[cellIndex]]}
             </TableCell>
           );
         });
 
         TableBodyRowCells.unshift(
-          <TableCell key={`delete-button-${index}`}>
+          <TableCell key={`delete-button-${rowIndex}`}>
             <Button variant="contained" color="error" onClick={onClickDeleteOne}><DeleteIcon /></Button>
           </TableCell>
         );
   
         return (
-          <TableRow key={`document-${index}`} hover sx={{ cursor: 'pointer' }} onClick={(e) => onClickRow(e, document._id)}>
+          <TableRow key={`document-${rowIndex}`} hover sx={{ cursor: 'pointer' }} onClick={(e) => onClickRow(e, document._id)}>
             {TableBodyRowCells}
           </TableRow>
         );
