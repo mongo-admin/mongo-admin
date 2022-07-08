@@ -11,10 +11,8 @@ export default async function handler(
 ) {
   const { uri } = req.body;
   const client = await MongoClient.connect(uri);
-  const connect = await client.db('admin').admin();
-  const listDatabases = await connect.listDatabases();
-
-  console.log(listDatabases);
+  
+  await client.db('admin').admin();
 
   res.status(200).json({ success: true });
 }

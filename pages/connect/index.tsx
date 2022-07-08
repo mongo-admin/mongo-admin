@@ -1,7 +1,6 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import { Alert, Snackbar, Backdrop, CircularProgress, Box, Stack, TextField, Button, Typography } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import * as cookie from '../../libs/cookie';

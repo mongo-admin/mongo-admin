@@ -45,7 +45,6 @@ const Document: NextPage = () => {
       if(res.status === 200) {
         const data = await res.json();
 
-        // setDocumentInfo(JSON.stringify(data.document, null, 4));
         setDocumentInfo(data.document);
       } else {
         router.replace('/connect');

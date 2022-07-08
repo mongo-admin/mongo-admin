@@ -17,7 +17,5 @@ export default async function handler(
   const databaseStats = await connect.stats();
   const collections = await connect.listCollections().toArray();
 
-  console.log(databaseStats);
-
   res.status(200).json({ success: true, databaseStats, collections });
 }
