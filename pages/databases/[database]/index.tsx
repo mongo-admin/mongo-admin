@@ -99,11 +99,35 @@ const Database: NextPage = () => {
     }
   };
 
-  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  };
-
   const Collections = collections.map((collection: any, index: number) => {
+    const onClickDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+
+      if(!window.confirm('Delete a collection.')) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/collection/delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ uri, database, collection: collection.name }),
+        });
+
+        if(res.status === 200) {
+          requestDatabaseInfo();
+        } else {
+          const data = await res.json();
+
+          setMessage(data.message);
+        }
+      } catch (err) {
+        router.replace('/connect');
+      }
+    };
+
     return (
       <Link key={collection.name} href={`${router.asPath}/${collection.name}`} underline="hover">
         <Stack spacing={4} p={2} direction="row" alignItems="center" justifyContent="space-between" sx={{ backgroundColor: '#FAFAFA' }}>
