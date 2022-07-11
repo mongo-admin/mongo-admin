@@ -1,8 +1,9 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Backdrop, CircularProgress, Box, Stack, Typography, Link, Button } from '@mui/material';
+import { Backdrop, CircularProgress, Box, Stack, Typography, Link, Button, Modal, TextField, Snackbar, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import * as cookie from '../../../libs/cookie';
@@ -13,6 +14,9 @@ const Database: NextPage = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [databaseStats, setDatabaseStats] = React.useState<any>({});
   const [collections, setCollections] = React.useState<any[]>([]);
+  const [openNewModal, setOpenNewModal] = React.useState<boolean>(false);
+  const [newCollectionName, setNewCollectionName] = React.useState<string>('');
+  const [message, setMessage] = React.useState<string>('');
   const router = useRouter();
   const { database } = router.query;
 
@@ -26,11 +30,11 @@ const Database: NextPage = () => {
 
   React.useEffect(() => {
     if(uri?.length && database) {
-      requestDatabaseInfo(database);
+      requestDatabaseInfo();
     }
   }, [uri, database]);
 
-  const requestDatabaseInfo = async (dbName: string | string[] | undefined) => {
+  const requestDatabaseInfo = async () => {
     setLoading(true);
 
     try {
@@ -62,6 +66,38 @@ const Database: NextPage = () => {
 
     router.replace('/connect');
   }
+
+  const onClickNew = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    setNewCollectionName('');
+    setOpenNewModal(true);
+  };
+
+  const onClickSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    try {
+      const res = await fetch('/api/collection/new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uri, database, collection: newCollectionName }),
+      });
+
+      if(res.status === 200) {
+        setOpenNewModal(false);
+        requestDatabaseInfo();
+      } else {
+        const data = await res.json();
+
+        setMessage(data.message);
+      }
+    } catch (err) {
+      router.replace('/connect');
+    }
+  };
 
   const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -99,9 +135,10 @@ const Database: NextPage = () => {
       <main className={styles.main}>
         {database ? (
           <Stack spacing={4}>
-            <Box>
+            <Stack spacing={8} direction="row" justifyContent="space-between">
               <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
-            </Box>
+              <Button variant="contained" color="success" startIcon={<AddBoxIcon />} onClick={onClickNew}>New</Button>
+            </Stack>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`DB Name: ${database}`}
             </Box>
@@ -114,6 +151,36 @@ const Database: NextPage = () => {
           </Stack>
         ) : null}
       </main>
+
+      <Modal
+        open={openNewModal}
+        onClose={() => setOpenNewModal(false)}>
+        <Stack
+          spacing={2}
+          sx={{ p: 4, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: '#FFFFFF' }}>
+          <TextField
+            sx={{ width: 480, backgroundColor: '#FAFAFA' }}
+            label="new-collection"
+            placeholder="Collection Name"
+            value={newCollectionName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCollectionName(e.target.value)}
+          />
+          <Stack spacing={2} direction="row" justifyContent="space-between">
+            <Button variant="outlined" onClick={() => setOpenNewModal(false)}>Cancel</Button>
+            <Button variant="contained" onClick={onClickSave}>Save</Button>
+          </Stack>
+        </Stack>
+      </Modal>
+
+      <Snackbar
+        open={!!message.length}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        autoHideDuration={3000}
+        onClose={() => setMessage('')}>
+        <Alert severity="error">
+          {message}
+        </Alert>
+      </Snackbar>
 
       <Backdrop
         open={loading}
