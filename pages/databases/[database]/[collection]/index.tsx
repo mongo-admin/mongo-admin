@@ -116,8 +116,33 @@ const Collection: NextPage = () => {
   const onClickNew = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
-    setNewDocumentValue('{\n\t_id: ObjectId(),\n}');
+    setNewDocumentValue('{\n\tkey: "value",\n}');
     setOpenNewModal(true);
+  };
+
+  const onClickSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    try {
+      const res = await fetch('/api/document/new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uri, database, collection, document: newDocumentValue }),
+      });
+
+      if(res.status === 200) {
+        setOpenNewModal(false);
+        requestCollectionInfo();
+      } else {
+        const data = await res.json();
+
+        setMessage(data.message);
+      }
+    } catch (err) {
+      router.replace('/connect');
+    }
   };
 
   const onClickRow = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, documentId: string) => {
@@ -280,7 +305,7 @@ const Collection: NextPage = () => {
           spacing={2}
           sx={{ p: 4, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: '#FFFFFF' }}>
           <TextField
-            sx={{ width: 480 }}
+            sx={{ width: 480, backgroundColor: '#FAFAFA' }}
             label="new-document"
             multiline
             rows={12}
@@ -289,7 +314,7 @@ const Collection: NextPage = () => {
           />
           <Stack spacing={2} direction="row" justifyContent="space-between">
             <Button variant="outlined" onClick={() => setOpenNewModal(false)}>Cancel</Button>
-            <Button variant="contained" onClick={onClickNew}>Save</Button>
+            <Button variant="contained" onClick={onClickSave}>Save</Button>
           </Stack>
         </Stack>
       </Modal>

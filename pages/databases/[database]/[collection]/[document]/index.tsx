@@ -126,10 +126,9 @@ const Document: NextPage = () => {
 
   const Editor = (
     <TextField
-      sx={{ width: '80vw' }}
+      sx={{ width: '80vw', backgroundColor: '#FAFAFA' }}
       label={`document - ${document}`}
       multiline
-      variant="filled"
       maxRows={20}
       value={documentInfo}
       onChange={onChangeEditor}
