@@ -17,6 +17,7 @@ import {
   TableHead,
   TableRow,
   Modal,
+  TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -28,9 +29,10 @@ import styles from '../../../../styles/Collection.module.css';
 const Collection: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [openNewModal, setOpenNewModal] = React.useState<boolean>(false);
   const [collectionStats, setCollectionStats] = React.useState<any>({});
   const [documents, setDocuments] = React.useState<any[]>([0]);
+  const [openNewModal, setOpenNewModal] = React.useState<boolean>(false);
+  const [newDocumentValue, setNewDocumentValue] = React.useState<string>('');
   const [message, setMessage] = React.useState<string>('');
   const router = useRouter();
   const { database, collection } = router.query;
@@ -114,6 +116,7 @@ const Collection: NextPage = () => {
   const onClickNew = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
+    setNewDocumentValue('{\n\t_id: ObjectId(),\n}');
     setOpenNewModal(true);
   };
 
@@ -273,7 +276,22 @@ const Collection: NextPage = () => {
       <Modal
         open={openNewModal}
         onClose={() => setOpenNewModal(false)}>
-        <Box sx={{ p: 4, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: '#FFFFFF' }}>new</Box>
+        <Stack
+          spacing={2}
+          sx={{ p: 4, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: '#FFFFFF' }}>
+          <TextField
+            sx={{ width: 480 }}
+            label="new-document"
+            multiline
+            rows={12}
+            value={newDocumentValue}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewDocumentValue(e.target.value)}
+          />
+          <Stack spacing={2} direction="row" justifyContent="space-between">
+            <Button variant="outlined" onClick={() => setOpenNewModal(false)}>Cancel</Button>
+            <Button variant="contained" onClick={onClickNew}>Save</Button>
+          </Stack>
+        </Stack>
       </Modal>
 
       <Snackbar
