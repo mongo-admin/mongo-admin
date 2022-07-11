@@ -16,6 +16,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Modal,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -27,6 +28,7 @@ import styles from '../../../../styles/Collection.module.css';
 const Collection: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [openNewModal, setOpenNewModal] = React.useState<boolean>(false);
   const [collectionStats, setCollectionStats] = React.useState<any>({});
   const [documents, setDocuments] = React.useState<any[]>([0]);
   const [message, setMessage] = React.useState<string>('');
@@ -111,6 +113,8 @@ const Collection: NextPage = () => {
 
   const onClickNew = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    
+    setOpenNewModal(true);
   };
 
   const onClickRow = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, documentId: string) => {
@@ -246,13 +250,13 @@ const Collection: NextPage = () => {
       <main className={styles.main}>
         {database && collection ? (
           <Stack spacing={4}>
-            <Box display="flex" justifyContent="space-between">
+            <Stack spacing={8} direction="row"justifyContent="space-between">
               <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
               <Stack spacing={2} direction="row">
                 <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={onClickDeleteAll}>Delete All</Button>
                 <Button variant="contained" color="success" startIcon={<AddBoxIcon />} onClick={onClickNew}>New</Button>
               </Stack>
-            </Box>
+            </Stack>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`Collection Name: ${collection}`}
             </Box>
@@ -265,6 +269,12 @@ const Collection: NextPage = () => {
           </Stack>
         ) : null}
       </main>
+
+      <Modal
+        open={openNewModal}
+        onClose={() => setOpenNewModal(false)}>
+        <Box sx={{ p: 4, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: '#FFFFFF' }}>new</Box>
+      </Modal>
 
       <Snackbar
         open={!!message.length}
