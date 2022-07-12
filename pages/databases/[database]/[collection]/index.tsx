@@ -32,6 +32,7 @@ const Collection: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
   const [collectionStats, setCollectionStats] = React.useState<any>({});
+  const [documentsTotalCount, setDocumentsTotalCount] = React.useState<number>(0);
   const [documents, setDocuments] = React.useState<any[]>([0]);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
@@ -53,7 +54,7 @@ const Collection: NextPage = () => {
     if(uri?.length && database && collection) {
       requestCollectionInfo();
     }
-  }, [uri, database, collection]);
+  }, [uri, database, collection, page, rowsPerPage]);
 
   const requestCollectionInfo = async () => {
     setLoading(true);
@@ -64,13 +65,14 @@ const Collection: NextPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uri, database, collection }),
+        body: JSON.stringify({ uri, database, collection, page, rowsPerPage }),
       });
 
       if(res.status === 200) {
         const data = await res.json();
 
         setCollectionStats(data.collectionStats);
+        setDocumentsTotalCount(data.documentsTotalCount);
         setDocuments(data.documents);
       } else {
         router.replace('/connect');  
@@ -156,7 +158,7 @@ const Collection: NextPage = () => {
   };
 
   const onChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage)
+    setPage(newPage);
   };
 
   const onChangeRowPerPage = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -268,7 +270,7 @@ const Collection: NextPage = () => {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 rowsPerPage={rowsPerPage}
-                count={documents.length}
+                count={documentsTotalCount}
                 page={page}
                 onPageChange={onChangePage}
                 onRowsPerPageChange={onChangeRowPerPage}
