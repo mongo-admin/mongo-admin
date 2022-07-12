@@ -95,11 +95,35 @@ const Databases: NextPage = () => {
     }
   };
 
-  const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  };
-
   const Databases = databaseInfo?.databases?.map((item: any, index: number) => {
+    const onClickDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+  
+      if(!window.confirm('Delete a database.')) {
+        return;
+      }
+  
+      try {
+        const res = await fetch('/api/database/delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ uri, database: item.name }),
+        });
+  
+        if(res.status === 200) {
+          requestDatabaseList();
+        } else {
+          const data = await res.json();
+  
+          setMessage(data.message);
+        }
+      } catch (err) {
+        router.replace('/connect');
+      }
+    };
+
     return (
       <Link key={item.name} href={`${router.asPath}/${item.name}`} underline="hover">
         <Stack spacing={4} p={2} direction="row" alignItems="center" justifyContent="space-between" sx={{ backgroundColor: '#FAFAFA' }}>
