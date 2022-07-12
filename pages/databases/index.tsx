@@ -1,9 +1,10 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Backdrop, CircularProgress, Box, Stack, Typography, Link, Button } from '@mui/material';
+import { Backdrop, CircularProgress, Box, Stack, Typography, Link, Button, Modal, TextField, Snackbar, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import * as cookie from '../../libs/cookie';
 import styles from '../../styles/Databases.module.css';
 
@@ -11,6 +12,9 @@ const Databases: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
   const [databaseInfo, setDatabaseInfo] = React.useState<any>(null);
+  const [openNewModal, setOpenNewModal] = React.useState<boolean>(false);
+  const [newDatabaseName, setNewDatabaseName] = React.useState<string>('');
+  const [message, setMessage] = React.useState<string>('');
   const router = useRouter();
 
   React.useEffect(() => {
@@ -59,6 +63,38 @@ const Databases: NextPage = () => {
     router.replace('/connect');
   }
 
+  const onClickNew = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    setNewDatabaseName('');
+    setOpenNewModal(true);
+  };
+
+  const onClickSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    try {
+      const res = await fetch('/api/database/new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uri, database: newDatabaseName }),
+      });
+
+      if(res.status === 200) {
+        setOpenNewModal(false);
+        requestDatabaseList();
+      } else {
+        const data = await res.json();
+
+        setMessage(data.message);
+      }
+    } catch (err) {
+      router.replace('/connect');
+    }
+  };
+
   const onClickDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
   };
@@ -86,6 +122,9 @@ const Databases: NextPage = () => {
       <main className={styles.main}>
         {databaseInfo ? (
           <Stack spacing={4}>
+            <Stack spacing={8} direction="row" justifyContent="flex-end">
+              <Button variant="contained" color="success" startIcon={<AddBoxIcon />} onClick={onClickNew}>New</Button>
+            </Stack>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`Connected URI: ${uri}`}
             </Box>
@@ -106,6 +145,36 @@ const Databases: NextPage = () => {
           </Stack>
         ) : null}
       </main>
+
+      <Modal
+        open={openNewModal}
+        onClose={() => setOpenNewModal(false)}>
+        <Stack
+          spacing={2}
+          sx={{ p: 4, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: '#FFFFFF' }}>
+          <TextField
+            sx={{ width: 480, backgroundColor: '#FAFAFA' }}
+            label="new-database"
+            placeholder="Database Name"
+            value={newDatabaseName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewDatabaseName(e.target.value)}
+          />
+          <Stack spacing={2} direction="row" justifyContent="space-between">
+            <Button variant="outlined" onClick={() => setOpenNewModal(false)}>Cancel</Button>
+            <Button variant="contained" onClick={onClickSave}>Save</Button>
+          </Stack>
+        </Stack>
+      </Modal>
+
+      <Snackbar
+        open={!!message.length}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        autoHideDuration={3000}
+        onClose={() => setMessage('')}>
+        <Alert severity="error">
+          {message}
+        </Alert>
+      </Snackbar>
 
       <Backdrop
         open={loading}
