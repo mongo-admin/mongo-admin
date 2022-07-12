@@ -16,6 +16,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableFooter,
+  TablePagination,
   Modal,
   TextField,
 } from '@mui/material';
@@ -31,6 +33,8 @@ const Collection: NextPage = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [collectionStats, setCollectionStats] = React.useState<any>({});
   const [documents, setDocuments] = React.useState<any[]>([0]);
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
   const [openNewModal, setOpenNewModal] = React.useState<boolean>(false);
   const [newDocumentValue, setNewDocumentValue] = React.useState<string>('');
   const [message, setMessage] = React.useState<string>('');
@@ -151,6 +155,15 @@ const Collection: NextPage = () => {
     router.push(`${router.asPath}/${documentId}`);
   };
 
+  const onChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage)
+  };
+
+  const onChangeRowPerPage = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setRowsPerPage(parseInt(e.target.value, 10));
+    setPage(0);
+  };
+
   const Documents = (() => {
     if(!documents.length) {
       return (
@@ -250,6 +263,18 @@ const Collection: NextPage = () => {
         <Table aria-label="simple table">
           {DocumentsTableHead}
           {DocumentsTableBody}
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                rowsPerPage={rowsPerPage}
+                count={documents.length}
+                page={page}
+                onPageChange={onChangePage}
+                onRowsPerPageChange={onChangeRowPerPage}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
     );
