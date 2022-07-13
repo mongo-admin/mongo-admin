@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { MongoClient, Document, WithId } from 'mongodb';
+import { MongoClient } from 'mongodb';
 
 type Data = {
   success: boolean,

@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { MongoClient } from 'mongodb';
-import * as parser from 'mongodb-query-parser';
 
 type Data = {
   success: boolean,
