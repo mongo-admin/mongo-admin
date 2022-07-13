@@ -2,17 +2,22 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { MongoClient } from 'mongodb';
 
 type Data = {
-  success: boolean
+  success: boolean,
+  message?: string,
 };
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { uri } = req.body;
-  const client = await MongoClient.connect(uri);
+  try {
+    const { uri } = req.body;
+    const client = await MongoClient.connect(uri);
 
-  client.close();
+    client.close();
 
-  res.status(200).json({ success: true });
+    res.status(200).json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 }
