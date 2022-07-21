@@ -309,7 +309,7 @@ const Collection: NextPage = () => {
               <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
               <Stack spacing={2} direction="row">
                 <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={onClickDeleteAll}>Delete All</Button>
-                <Button variant="contained" color="success" startIcon={<AddBoxIcon />} onClick={onClickNew}>New</Button>
+                <Button variant="contained" color="success" startIcon={<AddBoxIcon />} onClick={onClickNew}>New Document</Button>
               </Stack>
             </Stack>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>

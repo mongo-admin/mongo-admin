@@ -161,7 +161,7 @@ const Database: NextPage = () => {
           <Stack spacing={4}>
             <Stack spacing={8} direction="row" justifyContent="space-between">
               <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
-              <Button variant="contained" color="success" startIcon={<AddBoxIcon />} onClick={onClickNew}>New</Button>
+              <Button variant="contained" color="success" startIcon={<AddBoxIcon />} onClick={onClickNew}>New Collection</Button>
             </Stack>
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`DB Name: ${database}`}
