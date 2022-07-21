@@ -24,6 +24,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import * as cookie from '../../../../libs/cookie';
 import styles from '../../../../styles/Collection.module.css';
@@ -31,6 +32,8 @@ import styles from '../../../../styles/Collection.module.css';
 const Collection: NextPage = () => {
   const [uri, setUri] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [findKey, setFindKey] = React.useState<string>('');
+  const [findValue, setFindValue] = React.useState<string>('');
   const [collectionStats, setCollectionStats] = React.useState<any>({});
   const [documentsTotalCount, setDocumentsTotalCount] = React.useState<number>(0);
   const [documents, setDocuments] = React.useState<any[]>([0]);
@@ -149,6 +152,10 @@ const Collection: NextPage = () => {
     } catch (err) {
       router.replace('/connect');
     }
+  };
+
+  const onClickFind = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('key:', findKey, ', value:', findValue);
   };
 
   const onClickRow = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, documentId: string) => {
@@ -305,7 +312,7 @@ const Collection: NextPage = () => {
       <main className={styles.main}>
         {database && collection ? (
           <Stack spacing={4}>
-            <Stack spacing={8} direction="row"justifyContent="space-between">
+            <Stack spacing={8} direction="row" justifyContent="space-between">
               <Button variant="contained" color="warning" startIcon={<ArrowBackIosNewIcon />} onClick={() => router.back()}>Back</Button>
               <Stack spacing={2} direction="row">
                 <Button variant="contained" color="error" startIcon={<DeleteIcon />} onClick={onClickDeleteAll}>Delete All</Button>
@@ -315,6 +322,23 @@ const Collection: NextPage = () => {
             <Box sx={{ px: 6, py: 2, textAlign: 'center', backgroundColor: '#FAFAFA' }}>
               {`Collection Name: ${collection}`}
             </Box>
+            <Stack spacing={1} direction="row" justifyContent="flex-end">
+              <TextField
+                sx={{ flex: 1, backgroundColor: '#FAFAFA' }}
+                label="Key"
+                placeholder="Key"
+                value={findKey}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFindKey(e.target.value)}
+              />
+              <TextField
+                sx={{ flex: 1, backgroundColor: '#FAFAFA' }}
+                label="Value"
+                placeholder="Value"
+                value={findValue}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFindValue(e.target.value)}
+              />
+              <Button variant="contained" startIcon={<SearchIcon />} onClick={onClickFind}>Find</Button>
+            </Stack>
             <Stack spacing={1}>
               {Documents}
             </Stack>
