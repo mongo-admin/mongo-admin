@@ -20,6 +20,9 @@ import {
   TablePagination,
   Modal,
   TextField,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -35,7 +38,8 @@ const Collection: NextPage = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [findKey, setFindKey] = React.useState<string>('');
   const [findValue, setFindValue] = React.useState<string>('');
-  const [isFind, setIsFind] = React.useState<boolean>(false);
+  const [findValueType, setFindValueType] = React.useState<string>('string');
+  const [isFind, setIsFind] = React.useState<number>(0);
   const [collectionStats, setCollectionStats] = React.useState<any>({});
   const [documentsTotalCount, setDocumentsTotalCount] = React.useState<number>(0);
   const [documents, setDocuments] = React.useState<any[]>([0]);
@@ -70,7 +74,7 @@ const Collection: NextPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uri, database, collection, page, rowsPerPage, key: findKey, value: findValue }),
+        body: JSON.stringify({ uri, database, collection, page, rowsPerPage, key: findKey, value: findValue, valueType: findValueType }),
       });
 
       if(res.status === 200) {
@@ -159,7 +163,7 @@ const Collection: NextPage = () => {
   const onClickFind = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    setIsFind(true);
+    setIsFind(isFind + 1);
     setPage(0);
   };
 
@@ -168,7 +172,8 @@ const Collection: NextPage = () => {
 
     setFindKey('');
     setFindValue('');
-    setIsFind(false);
+    setFindValueType('string');
+    setIsFind(0);
     setPage(0);
   };
 
@@ -338,19 +343,25 @@ const Collection: NextPage = () => {
             </Box>
             <Stack spacing={1} direction="row" justifyContent="flex-end">
               <TextField
-                sx={{ flex: 1, backgroundColor: '#FAFAFA' }}
+                sx={{ flex: 1 }}
                 label="Key"
                 placeholder="Key"
                 value={findKey}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFindKey(e.target.value)}
               />
               <TextField
-                sx={{ flex: 1, backgroundColor: '#FAFAFA' }}
+                sx={{ flex: 1 }}
                 label="Value"
                 placeholder="Value"
                 value={findValue}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFindValue(e.target.value)}
               />
+              <Select label="Value-Type" value={findValueType} onChange={(e: SelectChangeEvent) => setFindValueType(e.target.value)}>
+                <MenuItem value="string">String</MenuItem>
+                <MenuItem value="number">Number</MenuItem>
+                <MenuItem value="json">JSON</MenuItem>
+                <MenuItem value="objectid">ObjectId</MenuItem>
+              </Select>
               <Button variant="contained" startIcon={<SearchIcon />} onClick={onClickFind}>Find</Button>
               <Button variant="contained" color="error" startIcon={<RestartAltIcon />} onClick={onClickFindReset}>Reset</Button>
             </Stack>
