@@ -27,6 +27,12 @@ export default async function handler(
       case 'number':
         query = {[key]: Number(value)};
         break;
+      case 'boolean':
+        query = {[key]: Boolean(value)};
+        break;
+      case 'null':
+        query = {[key]: JSON.parse(value)};
+        break;
       case 'objectid':
         query = {[key]: new ObjectId(value)};
         break;

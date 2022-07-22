@@ -359,7 +359,8 @@ const Collection: NextPage = () => {
               <Select label="Value-Type" value={findValueType} onChange={(e: SelectChangeEvent) => setFindValueType(e.target.value)}>
                 <MenuItem value="string">String</MenuItem>
                 <MenuItem value="number">Number</MenuItem>
-                <MenuItem value="json">JSON</MenuItem>
+                <MenuItem value="boolean">Boolean</MenuItem>
+                <MenuItem value="null">Null</MenuItem>
                 <MenuItem value="objectid">ObjectId</MenuItem>
               </Select>
               <Button variant="contained" startIcon={<SearchIcon />} onClick={onClickFind}>Find</Button>
