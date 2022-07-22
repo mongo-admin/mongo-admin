@@ -22,6 +22,7 @@ export default async function handler(
 
     res.status(200).json({ success: true, document: parser.toJSString(document, 4) });
   } catch (err: any) {
+    console.error(err);
     res.status(200).json({ success: false, message: err.message });
   }
 }

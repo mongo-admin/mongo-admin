@@ -21,6 +21,7 @@ export default async function handler(
 
     res.status(200).json({ success: true, databases });
   } catch (err: any) {
+    console.error(err);
     res.status(500).json({ success: false, message: err.message });
   }
 }

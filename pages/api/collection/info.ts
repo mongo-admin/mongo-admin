@@ -25,6 +25,7 @@ export default async function handler(
 
     res.status(200).json({ success: true, collectionStats, documentsTotalCount, documents });
   } catch (err: any) {
+    console.error(err);
     res.status(500).json({ success: false, message: err.message });
   }
 }
