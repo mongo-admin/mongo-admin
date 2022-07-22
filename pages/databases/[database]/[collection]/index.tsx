@@ -25,6 +25,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import * as cookie from '../../../../libs/cookie';
 import styles from '../../../../styles/Collection.module.css';
@@ -34,6 +35,7 @@ const Collection: NextPage = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [findKey, setFindKey] = React.useState<string>('');
   const [findValue, setFindValue] = React.useState<string>('');
+  const [isFind, setIsFind] = React.useState<boolean>(false);
   const [collectionStats, setCollectionStats] = React.useState<any>({});
   const [documentsTotalCount, setDocumentsTotalCount] = React.useState<number>(0);
   const [documents, setDocuments] = React.useState<any[]>([0]);
@@ -57,18 +59,18 @@ const Collection: NextPage = () => {
     if(uri?.length && database && collection) {
       requestCollectionInfo();
     }
-  }, [uri, database, collection, page, rowsPerPage]);
+  }, [uri, database, collection, page, isFind]);
 
   const requestCollectionInfo = async () => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/collection/info', {
+      const res = await fetch(`/api/collection/${isFind ? 'find' : 'info'}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uri, database, collection, page, rowsPerPage }),
+        body: JSON.stringify({ uri, database, collection, page, rowsPerPage, key: findKey, value: findValue }),
       });
 
       if(res.status === 200) {
@@ -155,7 +157,19 @@ const Collection: NextPage = () => {
   };
 
   const onClickFind = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('key:', findKey, ', value:', findValue);
+    e.preventDefault();
+
+    setIsFind(true);
+    setPage(0);
+  };
+
+  const onClickFindReset = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    setFindKey('');
+    setFindValue('');
+    setIsFind(false);
+    setPage(0);
   };
 
   const onClickRow = (e: React.MouseEvent<HTMLTableRowElement, MouseEvent>, documentId: string) => {
@@ -338,6 +352,7 @@ const Collection: NextPage = () => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFindValue(e.target.value)}
               />
               <Button variant="contained" startIcon={<SearchIcon />} onClick={onClickFind}>Find</Button>
+              <Button variant="contained" color="error" startIcon={<RestartAltIcon />} onClick={onClickFindReset}>Reset</Button>
             </Stack>
             <Stack spacing={1}>
               {Documents}
