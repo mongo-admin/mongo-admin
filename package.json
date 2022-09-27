@@ -13,7 +13,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.10.1",
+    "@mui/material": "^5.10.7",
     "cookies-next": "^2.1.1",
     "mongodb": "^4.9.1",
     "mongodb-query-parser": "^2.4.6",
